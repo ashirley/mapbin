@@ -23,7 +23,6 @@
 //                                                 20037508.34, 20037508.34),
                 controls: [
                              new OpenLayers.Control.LayerSwitcher(),
-                             new OpenLayers.Control.Navigation(),
                              new OpenLayers.Control.Attribution(),
 //                             new OpenLayers.Control.MousePosition(),
                              new OpenLayers.Control.PanZoomBar(),
@@ -56,7 +55,22 @@
             vectors = new OpenLayers.Layer.Vector("Annotations");
             map.addLayers([mapnik, vectors/*, gmap, sundials*/]);
 
-            map.addControl(new OpenLayers.Control.EditingToolbar(vectors));
+
+            var editControls = [
+             new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Point, {'displayClass': 'olControlDrawFeaturePoint'}),
+             new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Path, {'displayClass': 'olControlDrawFeaturePath'}),
+             new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Polygon, {'displayClass': 'olControlDrawFeaturePolygon'}),
+            ];
+
+            var navControls = [
+             new OpenLayers.Control.Navigation(),
+            ];
+
+
+            var toolbar = new OpenLayers.Control.Panel({displayClass: 'olControlEditingToolbar', defaultControl: navControls[0]});
+            toolbar.addControls(navControls);
+            toolbar.addControls(editControls);
+            map.addControl(toolbar);
 
             map.setCenter(new OpenLayers.LonLat(-1, -25), 6);
 
