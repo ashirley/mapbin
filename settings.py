@@ -76,4 +76,6 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'mapbin.gmlStore',
+    'django.contrib.admin',
 )
