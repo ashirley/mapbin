@@ -72,6 +72,8 @@
             toolbar.addControls(editControls);
             map.addControl(toolbar);
 
+            map.addControl(new OpenLayers.Control.Permalink());
+
             map.setCenter(new OpenLayers.LonLat(-1, -25), 6);
 
 /*
