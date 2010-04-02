@@ -1,0 +1,2 @@
+* The images which are used for the editing toolbar all seem to be loaded dynamically as one large image. This is based on the original EditingToolbar class and hence has the same image!
+* use OpenLayers.Request not jQuery for the POST
