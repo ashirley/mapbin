@@ -2,7 +2,7 @@
 from mapbin.gmlStore.models import Annotation
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
-import datetime
+from datetime import datetime
 
 #normal web 1.0 views
 
