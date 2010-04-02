@@ -5,13 +5,31 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
  
     <!-- <script type="text/javascript" src="http://openspace.ordnancesurvey.co.uk/osmapapi/openspace.js?key=7713B6D550C700BCE0405F0AF1603C2F"> </script> -->
-    <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"> </script>
+    <script type="text/javascript" src="http://nawab.woaf.net/OpenLayers-2.8/OpenLayers.js"> </script>
+    <!--<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"> </script>-->
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.js"> </script> <!-- TODO add min to this url -->
 
     <link rel="stylesheet" type="text/css" href="css/main.css" /> 
   </head> 
   <body  onload="init()"> 
   <div id="map" style="width: 100%;"></div> 
-    <script type="text/javascript"> 
+  <div id="map" style="width: 100%;"></div> 
+    <!-- AJAX -->
+    <script type="text/javascript">
+      function startUpload() {
+        var data = { gml:"<gml/>", };
+        var args = { type:"POST", url:"/gml/store", data:data, complete:doneUpload };
+	$.ajax(args);
+	$("#statusDiv").innerHtml="Uploading...";
+      }
+
+      function doneUpload() {
+	$("#statusDiv").innerHtml="Uploaded.";
+      }
+
+    </script>
+    <!-- OpenLayers -->
+    <script type="text/javascript">
         var map, select;
         var controls, vectors;
 
@@ -40,26 +58,21 @@
             );
             var gmap = new OpenLayers.Layer.Google("Google", {sphericalMercator:true});
 
-            //var sundials = new OpenLayers.Layer.Vector("KML", {
-            //    projection: map.displayProjection,
-            //    strategies: [new OpenLayers.Strategy.Fixed()],
-            //    protocol: new OpenLayers.Protocol.HTTP({
-            //        url: "kml/sundials.kml",
-            //        format: new OpenLayers.Format.KML({
-            //            extractStyles: true,
-            //            extractAttributes: true
-            //        })
-            //    })
-            //});
-
             vectors = new OpenLayers.Layer.Vector("Annotations");
             map.addLayers([mapnik, vectors/*, gmap, sundials*/]);
 
 
             var editControls = [
-             new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Point, {'displayClass': 'olControlDrawFeaturePoint'}),
-             new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Path, {'displayClass': 'olControlDrawFeaturePath'}),
-             new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Polygon, {'displayClass': 'olControlDrawFeaturePolygon'}),
+             new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Point, {'displayClass': 'olControlDrawFeaturePoint', multi: true}),
+             new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Path, {'displayClass': 'olControlDrawFeaturePath', multi: true}),
+             new OpenLayers.Control.DrawFeature(vectors, OpenLayers.Handler.Polygon, {'displayClass': 'olControlDrawFeaturePolygon', multi: true}),
+	     new OpenLayers.Control.Button({
+                title: "Save changes",
+		trigger: function(){
+		  startUpload();
+                },
+                displayClass: "olControlSaveFeatures"
+              }),
             ];
 
             var navControls = [
@@ -76,29 +89,8 @@
 
             map.setCenter(new OpenLayers.LonLat(-1, -25), 6);
 
-/*
-            controls = {
-                point: new OpenLayers.Control.DrawFeature(vectors,
-                            OpenLayers.Handler.Point),
-                line: new OpenLayers.Control.DrawFeature(vectors,
-                            OpenLayers.Handler.Path),
-                polygon: new OpenLayers.Control.DrawFeature(vectors,
-                            OpenLayers.Handler.Polygon),
-                drag: new OpenLayers.Control.DragFeature(vectors)
-            };
-
-            for(var key in controls) {
-                map.addControl(controls[key]);
-            }
-
-            document.getElementById('noneToggle').checked = true;
-*/
         }
-/*
-        function onPopupClose(evt) {
-            select.unselectAll();
-        }
-*/
+
         function osm_getTileURL(bounds) {
             var res = this.map.getResolution();
             var x = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
@@ -113,18 +105,6 @@
                 return this.url + z + "/" + x + "/" + y + "." + this.type;
             }
         }
-/*
-       function toggleControl(element) {
-            for(key in controls) {
-                var control = controls[key];
-                if(element.value == key && element.checked) {
-                    control.activate();
-                } else {
-                    control.deactivate();
-                }
-            }
-        }
-*/
     </script>
   </body>
 </html>

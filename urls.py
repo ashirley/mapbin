@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
 
     (r'^gml/', include('mapbin.gmlStore.urls')),
+    (r'^map$', 'django.views.generic.simple.direct_to_template', {'template': 'map.html'}),
 )
