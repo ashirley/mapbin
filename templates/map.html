@@ -13,11 +13,11 @@
   </head> 
   <body  onload="init()"> 
   <div id="map" style="width: 100%;"></div> 
-  <div id="map" style="width: 100%;"></div> 
+  <div id="statusDiv" style="width: 100%;"></div> 
     <!-- AJAX -->
     <script type="text/javascript">
-      function startUpload() {
-        var data = { gml:"<gml/>", };
+      function startUpload(layer) {
+        var data = { gml:new OpenLayers.Format.GML().write(layer.features), };
         var args = { type:"POST", url:"/gml/store", data:data, complete:doneUpload };
 	$.ajax(args);
 	$("#statusDiv").innerHtml="Uploading...";
@@ -59,6 +59,12 @@
             var gmap = new OpenLayers.Layer.Google("Google", {sphericalMercator:true});
 
             vectors = new OpenLayers.Layer.Vector("Annotations");
+
+	    {% if params.load_id %}
+	    var gmlData = OpenLayers.Request.GET({async: false, url: "http://nawab.woaf.net:8099/gml/{{ params.load_id }}/get"}).responseText;
+	    vectors.features = new OpenLayers.Format.GML().read(gmlData);
+            {% endif %}
+
             map.addLayers([mapnik, vectors/*, gmap, sundials*/]);
 
 
@@ -69,7 +75,7 @@
 	     new OpenLayers.Control.Button({
                 title: "Save changes",
 		trigger: function(){
-		  startUpload();
+		  startUpload(vectors);
                 },
                 displayClass: "olControlSaveFeatures"
               }),
