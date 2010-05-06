@@ -6,4 +6,5 @@ urlpatterns = patterns('mapbin.gmlStore.views',
     (r'^(?P<gml_id>\d+)$', 'info'),
     (r'^(?P<gml_id>\d+)/get$', 'get'),
     (r'^(?P<gml_id>\d+)/info$', 'info'),
+    (r'^(?P<gml_id>\d+)/store$', 'store'),
 )

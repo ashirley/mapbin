@@ -18,7 +18,13 @@
     <script type="text/javascript">
       function startUpload(layer) {
         var data = { gml:new OpenLayers.Format.GML().write(layer.features), };
-        var args = { type:"POST", url:"/gml/store", data:data, complete:doneUpload };
+        {% if params.load_id %}
+	var storeUrl = "/gml/{{ params.load_id }}/store";
+	{% else %}
+	var storeUrl = "/gml/store";
+        {% endif %}
+
+        var args = { type:"POST", url:storeUrl, data:data, complete:doneUpload };
 	$.ajax(args);
 	$("#statusDiv").innerHtml="Uploading...";
       }
